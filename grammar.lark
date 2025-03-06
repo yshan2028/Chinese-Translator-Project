@@ -1,0 +1,18 @@
+start: statement+
+
+statement: "整数" NAME "为" expr    -> assign
+         | "输出" "(" expr ")"      -> output
+
+?expr: expr "加" expr              -> add
+     | NUMBER                      -> number
+     | NAME                        -> var
+
+// ✅ 允许变量名使用中文、英文、数字、下划线
+NAME: /[\u4e00-\u9fa5_a-zA-Z][\u4e00-\u9fa5_a-zA-Z0-9_]*/
+
+// ✅ 允许整数字面量
+NUMBER: /\d+/
+
+// ✅ 允许换行（否则 Lark 可能报 `No terminal matches '\n'` 错误）
+%import common.WS
+%ignore WS
