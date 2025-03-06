@@ -1,18 +1,31 @@
 start: statement+
 
 statement: "整数" NAME "为" expr    -> assign
+         | "整数" NAME "取" NAME "(" args ")" -> func_call  // ✅ 修正函数调用语法
          | "输出" "(" expr ")"      -> output
+         | "功能" NAME "入" parameters block -> func_def  // ✅ 允许有无括号的参数格式
 
 ?expr: expr "加" expr              -> add
      | NUMBER                      -> number
      | NAME                        -> var
+     | func_call                   // ✅ 确保 `func_call` 可以在表达式中使用
 
-// ✅ 允许变量名使用中文、英文、数字、下划线
+func_call: "整数" NAME "取" NAME "(" args ")"  // ✅ 确保解析 `整数 和 取 加法(甲, 乙)`
+
+parameters: NAME ("," NAME)*       // ✅ 允许多个参数
+          | "（" NAME ("," NAME)* "）"  // ✅ 允许 `（甲,乙）` 格式
+
+args: expr ("," expr)*             // ✅ 允许多个参数
+
+block: statement* return_stmt?
+
+return_stmt: "返" expr  -> return_stmt
+
+// ✅ 允许中文变量名
 NAME: /[\u4e00-\u9fa5_a-zA-Z][\u4e00-\u9fa5_a-zA-Z0-9_]*/
 
-// ✅ 允许整数字面量
-NUMBER: /\d+/
+// ✅ 修正 `NUMBER` 以避免 Python 误解析 `\d`
+NUMBER: /[0-9]+/
 
-// ✅ 允许换行（否则 Lark 可能报 `No terminal matches '\n'` 错误）
 %import common.WS
 %ignore WS
