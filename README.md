@@ -11,6 +11,10 @@
 - **数学运算**：支持 `加` 运算符。
 - **输出功能**：使用 `输出()` 打印变量值。
 
+## 中文文档
+
+[手册](https://github.com/yshan2028/Chinese-Translator-Project/wiki/%E4%B8%BB%E8%A6%81)
+
 ---
 
 ## 🛠️ 环境要求
